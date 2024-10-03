@@ -132,6 +132,7 @@ class SlackReporter implements Reporter {
       const webhook = new IncomingWebhook(this.slackWebHookUrl, {
         channel: this.slackWebHookChannel,
         agent,
+        username: "Execution E2E"
       });
       const slackWebhookClient = new SlackWebhookClient(webhook);
       const webhookResult = await slackWebhookClient.sendMessage({

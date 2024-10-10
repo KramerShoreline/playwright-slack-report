@@ -17,6 +17,7 @@ declare class SlackReporter implements Reporter {
     private proxy;
     private browsers;
     private suite;
+    private username;
     logs: string[];
     onBegin(fullConfig: FullConfig, suite: Suite): void;
     onTestEnd(test: TestCase, result: TestResult): void;

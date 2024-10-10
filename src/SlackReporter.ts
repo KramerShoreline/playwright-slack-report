@@ -49,6 +49,8 @@ class SlackReporter implements Reporter {
 
   private suite!: Suite;
 
+  private username: string;
+
   logs: string[] = [];
 
   onBegin(fullConfig: FullConfig, suite: Suite): void {
@@ -87,6 +89,7 @@ class SlackReporter implements Reporter {
       this.showInThread = slackReporterConfig.showInThread || false;
       this.slackLogLevel = slackReporterConfig.slackLogLevel || LogLevel.DEBUG;
       this.proxy = slackReporterConfig.proxy || undefined;
+      this.username = slackReporterConfig.username || 'E2E Test';
     }
     this.resultsParser = new ResultsParser();
   }
@@ -132,7 +135,7 @@ class SlackReporter implements Reporter {
       const webhook = new IncomingWebhook(this.slackWebHookUrl, {
         channel: this.slackWebHookChannel,
         agent,
-        username: "Execution E2E"
+        username: this.username
       });
       const slackWebhookClient = new SlackWebhookClient(webhook);
       const webhookResult = await slackWebhookClient.sendMessage({
@@ -170,19 +173,6 @@ class SlackReporter implements Reporter {
           showInThread: this.showInThread,
         },
       });
-      // eslint-disable-next-line no-console
-      console.log(JSON.stringify(result, null, 2));
-      if (this.showInThread && resultSummary.failures.length > 0) {
-        for (let i = 0; i < result.length; i += 1) {
-          // eslint-disable-next-line no-await-in-loop
-          await slackClient.attachDetailsToThread({
-            channelIds: [result[i].channel],
-            ts: result[i].ts,
-            summaryResults: resultSummary,
-            maxNumberOfFailures: this.maxNumberOfFailuresToShow,
-          });
-        }
-      }
     }
   }
 

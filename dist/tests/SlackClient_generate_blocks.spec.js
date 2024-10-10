@@ -24,27 +24,6 @@ test_1.test.describe('SlackClient.generateBlocks()', () => {
             },
         });
     });
-    (0, test_1.test)('showInThreads enabled - show warning message if number of failures exceeds maximum allowed', async () => {
-        const generatedBlock = await (0, LayoutGenerator_1.generateFailures)({
-            failed: 2,
-            passed: 0,
-            flaky: undefined,
-            skipped: 0,
-            failures: [
-                { suite: 'smoke', test: 'test', failureReason: 'message' },
-                { suite: 'smoke', test: 'test2', failureReason: 'message' },
-                { suite: 'smoke', test: 'test3', failureReason: 'message' },
-            ],
-            tests: [],
-        }, 1);
-        (0, test_1.expect)(generatedBlock[2]).toEqual({
-            type: 'section',
-            text: {
-                type: 'mrkdwn',
-                text: '*⚠️ There are too many failures to display - 1 out of 3 failures shown*',
-            },
-        });
-    });
     (0, test_1.test)('creates blocks with correct stats summary - flaky disabled', async () => {
         const generatedBlock = await (0, LayoutGenerator_1.generateBlocks)({
             failed: 1,

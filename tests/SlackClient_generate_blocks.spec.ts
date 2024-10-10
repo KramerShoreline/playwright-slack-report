@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { generateBlocks, generateFailures } from '../src/LayoutGenerator';
+import { generateBlocks } from '../src/LayoutGenerator';
 
 test.describe('SlackClient.generateBlocks()', () => {
   test('includes warning message if number of failures exceeds maximum allowed', async () => {
@@ -23,31 +23,6 @@ test.describe('SlackClient.generateBlocks()', () => {
       text: {
         type: 'mrkdwn',
         text: '*⚠️ There are too many failures to display - 2 out of 3 failures shown*',
-      },
-    });
-  });
-
-  test('showInThreads enabled - show warning message if number of failures exceeds maximum allowed', async () => {
-    const generatedBlock = await generateFailures(
-      {
-        failed: 2,
-        passed: 0,
-        flaky: undefined,
-        skipped: 0,
-        failures: [
-          { suite: 'smoke', test: 'test', failureReason: 'message' },
-          { suite: 'smoke', test: 'test2', failureReason: 'message' },
-          { suite: 'smoke', test: 'test3', failureReason: 'message' },
-        ],
-        tests: [],
-      },
-      1,
-    );
-    expect(generatedBlock[2]).toEqual({
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text: '*⚠️ There are too many failures to display - 1 out of 3 failures shown*',
       },
     });
   });

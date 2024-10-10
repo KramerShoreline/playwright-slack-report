@@ -12,7 +12,6 @@ import {
 import { SummaryResults } from '.';
 import {
   generateBlocks,
-  generateFailures,
   generateFallbackText,
 } from './LayoutGenerator';
 
@@ -125,7 +124,7 @@ export default class SlackClient {
     fakeRequest?: Function;
   }) {
     const result = [];
-    const blocks = await generateFailures(summaryResults, maxNumberOfFailures);
+    const blocks = [];
     if (blocks.length === 0) {
       return result;
     }

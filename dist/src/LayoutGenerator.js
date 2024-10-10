@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateFallbackText = exports.generateFailures = exports.generateBlocks = void 0;
+exports.generateFallbackText = exports.generateBlocks = void 0;
 const generateBlocks = async (summaryResults, maxNumberOfFailures) => {
     const meta = [];
     const header = {
@@ -19,7 +19,6 @@ const generateBlocks = async (summaryResults, maxNumberOfFailures) => {
                 : ' '}⏩ *${summaryResults.skipped}*`,
         },
     };
-    const fails = await generateFailures(summaryResults, maxNumberOfFailures);
     if (summaryResults.meta) {
         for (let i = 0; i < summaryResults.meta.length; i += 1) {
             const { key, value } = summaryResults.meta[i];
@@ -32,49 +31,9 @@ const generateBlocks = async (summaryResults, maxNumberOfFailures) => {
             });
         }
     }
-    return [header, summary, ...meta, ...fails];
+    return [header, summary, ...meta];
 };
 exports.generateBlocks = generateBlocks;
-const generateFailures = async (summaryResults, maxNumberOfFailures) => {
-    const maxNumberOfFailureLength = 650;
-    const fails = [];
-    const numberOfFailuresToShow = Math.min(summaryResults.failures.length, maxNumberOfFailures);
-    for (let i = 0; i < numberOfFailuresToShow; i += 1) {
-        const { failureReason, test, suite } = summaryResults.failures[i];
-        const formattedFailure = failureReason
-            .substring(0, maxNumberOfFailureLength)
-            .split('\n')
-            .map((l) => `>${l}`)
-            .join('\n');
-        fails.push({
-            type: 'section',
-            text: {
-                type: 'mrkdwn',
-                text: `*${suite} > ${test}*
-        \n${formattedFailure}`,
-            },
-        });
-    }
-    if (maxNumberOfFailures > 0 && summaryResults.failures.length > maxNumberOfFailures) {
-        fails.push({
-            type: 'section',
-            text: {
-                type: 'mrkdwn',
-                text: `*⚠️ There are too many failures to display - ${fails.length} out of ${summaryResults.failures.length} failures shown*`,
-            },
-        });
-    }
-    if (fails.length === 0) {
-        return [];
-    }
-    return [
-        {
-            type: 'divider',
-        },
-        ...fails,
-    ];
-};
-exports.generateFailures = generateFailures;
 const generateFallbackText = (summaryResults) => `✅ ${summaryResults.passed} ❌ ${summaryResults.failed} ${summaryResults.flaky !== undefined ? ` 🟡 ${summaryResults.flaky} ` : ' '}⏩ ${summaryResults.skipped}`;
 exports.generateFallbackText = generateFallbackText;
 //# sourceMappingURL=LayoutGenerator.js.map
